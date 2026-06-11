@@ -1,0 +1,5 @@
+[
+  { "name": "01-ejemplo-skill-ia", "prompt": "Render cinematográfico 3D, estudio oscuro con luz azul y dorada: una interfaz de IA futurista ensamblando un video de ventas en un dashboard holográfico, ultra detallado, 16:9. Cualquier texto visible debe estar en ESPAÑOL." },
+  { "name": "02-ejemplo-dinero", "prompt": "Smartphone flotando en escena oscura, pantalla llena de notificaciones de ventas y billetes saliendo, acentos azul y dorado, 3D cinematográfico, 16:9. Sin texto en la imagen." },
+  { "name": "03-ejemplo-lujo", "prompt": "Corona dorada brillante sobre un pedestal en un salón lujoso y oscuro, ambiente de comunidad élite, luz volumétrica, 3D cinematográfico, 16:9. Sin texto." }
+]
