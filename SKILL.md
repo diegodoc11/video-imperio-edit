@@ -59,12 +59,23 @@ Keep any **baked captions + existing b-roll**. Put overlays OUTSIDE the caption 
 - **Stat / name cards** (great for intros): big animated number / credibility cards that pop in (`back.out`)
   one at a time over the presenter — e.g. "+200.000 seguidores", "+$300.000 invertidos", a name lower-third
   (Anton font for the big number). Use the client's REAL numbers.
+- **Visual diagram explainer** (loved by Simon/Diego): to explain connections/concepts (APIs, workflows), put the central element as a "brain" (big logo) center-screen on a dark panel and DRAW animated SVG arrows (animate stroke-dashoffset to 0) out to each node as it's mentioned, each with a label (e.g. "API"). Great for tutorials/explainers.
 - **Small dynamic overlays**: chips, seals, badges, thematic symbols in corners.
 - **Branded graphics**: price comparison (struck-through "fortuna" → "fracción"), cert/FDA seal, location pin,
   thematic icon (snowflake = cryo/cold), **CTA down-arrow** ("Toca el botón ↓", bouncing) to the link button.
 - **Music + ducking**: royalty-free bed on its own track. Don't just lower volume — **duck it** vs the voice:
   `ffmpeg -i source.mp4 -vn voice.wav`, then `[m]volume=1.7 … sidechaincompress=threshold=0.12:ratio=3:attack=20:release=350:makeup=2`
   → `music_ducked.mp3` at `data-volume` ~0.35–0.4. (Hard ducking + low volume = "casi no se escucha".)
+  - **When to DROP music entirely**: in interviews/2-mic shoots where one speaker (often the off-camera interviewer)
+    is recorded much quieter, even ducked music buries their lines. If the quiet voice fights the bed → **remove the
+    music, leave voices only**. Diego asked exactly this on the IMG_5323 reel ("mi voz no se escucha → déjalo sin música").
+- **Audio leveling (uneven speakers)** — when one voice is much softer than the other (quiet interviewer vs loud
+  interviewee), level BEFORE rendering. Compressor (tames the loud peaks + makeup brings the soft voice up) → loudnorm
+  (sets overall level). Re-mux onto the source keeping the video untouched (fast, no re-encode):
+  `ffmpeg -i source.mp4 -c:v copy -af "acompressor=threshold=-24dB:ratio=4:attack=10:release=200:makeup=4,loudnorm=I=-15:TP=-1.5:LRA=9" -c:a aac -b:a 192k source_leveled.mp4`.
+  On IMG_5323 this lifted the mean from **−26 → −18 dB** with peaks safe at −1.1. Verify with `ffmpeg -af volumedetect`
+  (mean should rise, max stay < −1). The `<audio id="bg-audio">` keeps pointing at the source file (now leveled);
+  `<audio id="bg-video">` still uses the SDR video track.
 - **Transitions (whoosh + flash)** — subtle. Synth `whoosh.mp3` (pink-noise burst + bandpass + fades), build
   ONE `sfx_bed.mp3` with whooshes at the cut/zoom times via `adelay`+`amix` (one file avoids
   `duplicate_media_discovery_risk`), `data-volume` ~0.4. Pair each with a 1-frame white `#flash`
@@ -135,9 +146,27 @@ Every ad in a series must open differently. Used so far on Criolipólisis: **01*
   cutout/bg-replacement might be wanted, deliver footage WITHOUT baked subtitles and add captions as the TOP layer last.
 - **"Two talking faces" (avatar artifact)**: when a bg poster also lip-syncs, AI bg-removal KEEPS it (it's a human).
   Reframe/crop it out, cover with a small medallion, or drop the take.
+- **iPhone/HDR footage → convert to SDR BEFORE rendering.** iPhone records HDR (HLG, bt2020, 10-bit). The HyperFrames HDR render path is slow/unstable and times out ("HDR frame extraction failed for bg-video"). Tonemap to SDR first: `ffmpeg -i in.mp4 -vf "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p" -color_primaries bt709 -color_trc bt709 -colorspace bt709 -c:a copy out.mp4`. Verify ffprobe color_transfer = bt709 (not arib-std-b67/smpte2084).
+- **Export has native clips but NO GSAP overlays (captions/cards/diagram)?** The inline script threw before `window.__timelines["main"] = tl`, so the timeline never registered → only `class="clip"` media renders. Fix: (1) register the timeline IMMEDIATELY after `gsap.timeline()`, (2) avoid `getTotalLength()` on SVG when building (throws in headless render though the Studio preview works) — use a fixed `stroke-dasharray` for draw-on arrows. Verify the EXPORT by extracting frames, not just the preview.
 - Kie AI Nano Banana: env var `KIE_API_KEY` (see the image-generation section for models/pricing/Spanish-text rule).
 
 ## Final render
 `npx hyperframes render <project> --quality high --output <project>/renders/<name>-FINAL.mp4`.
 Then VERIFY: extract frames (incl. adjacent frames to catch freezes) AND confirm the audio carries the **voice**,
 not just music — `ffmpeg -af volumedetect` on a speech window vs the source voice should be within a few dB.
+
+## Delivery (caption + send to the client)
+After the FINAL is approved, the client often wants the post-ready copy AND the file on their phone.
+- **Instagram copy** (when asked): write it in **Spanish**, in the client's voice. Proven structure for Diego's reels:
+  **hook** (a shocking stat or question — e.g. "+$1.000.000 USD/año") → **problem** (the slow manual way) →
+  **solution** (the tools/diagram from the video, e.g. Claude + APIs to ElevenLabs/Kie AI/Pexels) → **CTA with a
+  comment keyword** ("Comenta AUTOMATIZAR y te paso el tutorial") → a block of niche **hashtags**. Save it next to
+  the project as `caption-ig.txt` so it's reusable.
+- **Send to client's Telegram**: a Telegram bot is configured in the `Carruseles IG Premium` / `carruseles-ig`
+  projects — creds load from env vars `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` or those projects' `config.json`
+  (`telegram_bot_token` / `telegram_chat_id`). **NEVER hard-code or publish the token** — read it at runtime.
+  Send the video via the Bot API `sendVideo` (multipart) + the caption as a separate `sendMessage` so he can copy-paste it.
+  - **⚠️ 50 MB bot limit**: the FINAL high-quality render (often ~180 MB) is too big for a bot. Make a **compressed
+    copy < 50 MB** first: `ffmpeg -i FINAL.mp4 -c:v libx264 -b:v 3500k -maxrate 3900k -bufsize 7000k -preset medium -pix_fmt yuv420p -c:a aac -b:a 128k -movflags +faststart <name>-TG.mp4`
+    (a 92s 1080×1920 reel lands ~38 MB). No real quality loss for IG — **Instagram re-compresses uploads anyway** —
+    but keep the full-quality master in `renders/` for archive/other uses.
