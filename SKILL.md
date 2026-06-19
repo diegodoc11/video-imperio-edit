@@ -52,6 +52,21 @@ Keep any **baked captions + existing b-roll**. Put overlays OUTSIDE the caption 
   Wrapper does the motion: "zoom-blur" punch-in `scale 1.18→1.0` (`power3.out`) → slow ken-burns to ~1.07
   → fade out. Place cutaways in talk GAPS, never over a zoom. `data-media-start` must be INSIDE the clip
   duration (past the end freezes the last frame). **Every `<video>` needs an `id`** or the renderer freezes it.
+- **Cutout HERO scene — subject over a replaced background ("recortes estilo máscara", Diego LOVES this for YT intros).**
+  `npx hyperframes remove-background source.mp4 -o assets/cutout.webm` → composite the cutout OVER a dynamic backdrop
+  (money/AI b-roll + a darkened version, `filter:brightness(0.42)`) on its own track, subject on top. Time-sync the
+  cutout with `data-media-start = scene start` so the lips still match the audio. Keep the original `source.mp4` as the
+  base for the rest; show the cutout scene only on hero beats (the hook). **VERIFY cutout quality first** by compositing
+  one frame over magenta: `ffmpeg -f lavfi -i color=c=magenta:s=WxH -c:v libvpx-vp9 -ss N -i cutout.webm -filter_complex "[1:v]format=yuva420p[fg];[0:v][fg]overlay" -frames:v 1 chk.png`. u2net is clean on a seated talking head (hair/glasses/mic edges held up well).
+- **Masked insets — match the frame aspect to the asset's TRUE orientation ("analiza las fotos").** ffprobe EVERY asset's
+  real `width,height` AND **rotation** before sizing its frame. A vertical clip in a 16:9 frame (object-fit cover) crops
+  it ugly — Diego: "no quedan bien, hazlos más verticales, 4:5". So: vertical clips/portrait photos → **4:5** rounded
+  frame; landscape clips, IG/testimonial screenshots → **16:9** frame; cover for photos/video, contain when on-image text
+  must stay readable. Frame = gold border + radius + shadow; pop in (`back.out`) + slow ken-burns, fade out.
+- **Layout discipline — never cover the centered face; texts TOP, photos BOTTOM.** Diego flagged insets that "me tapan
+  la cara" and "elementos encimados al final". Rules: keep insets on the SIDES / bottom corners, never centered over the
+  face; in dense sections (stats + proof) put **stat/text cards along the TOP and photo/testimonial insets along the
+  BOTTOM corners**, max ~2 insets on screen at once, and STAGGER their windows so they don't pile up.
 - **Zoom punch-ins** on emphasis. Gentle = scale ~1.09, one yoyo, `sine.inOut`, ~0.8s. Aggressive (when asked)
   = punch to scale ~1.4–1.45, HOLD ~2s, then pull back. **Origin MUST sit on the subject's face, not 50%** —
   if they sit off-center, measure face x/y with an ffmpeg `drawgrid=w=iw/10:h=ih/10` frame and set
@@ -69,6 +84,9 @@ Keep any **baked captions + existing b-roll**. Put overlays OUTSIDE the caption 
   - **When to DROP music entirely**: in interviews/2-mic shoots where one speaker (often the off-camera interviewer)
     is recorded much quieter, even ducked music buries their lines. If the quiet voice fights the bed → **remove the
     music, leave voices only**. Diego asked exactly this on the IMG_5323 reel ("mi voz no se escucha → déjalo sin música").
+  - **Track choice + level for talking heads**: a track that "builds" hard reads as harsh under a calm voice — Diego
+    rejected `cinematic-inspirador` ("está un poquito dura") for a YT intro. For clarity-priority talking heads pick a
+    soft, EVEN track (e.g. `chill-luxury`) and keep it VERY low (`data-volume` ~0.10). The voice always wins.
 - **Audio leveling (uneven speakers)** — when one voice is much softer than the other (quiet interviewer vs loud
   interviewee), level BEFORE rendering. Compressor (tames the loud peaks + makeup brings the soft voice up) → loudnorm
   (sets overall level). Re-mux onto the source keeping the video untouched (fast, no re-encode):
@@ -76,6 +94,11 @@ Keep any **baked captions + existing b-roll**. Put overlays OUTSIDE the caption 
   On IMG_5323 this lifted the mean from **−26 → −18 dB** with peaks safe at −1.1. Verify with `ffmpeg -af volumedetect`
   (mean should rise, max stay < −1). The `<audio id="bg-audio">` keeps pointing at the source file (now leveled);
   `<audio id="bg-video">` still uses the SDR video track.
+- **Audio clarity (single speaker — muddy or clipped entrance)** — when the client says "no se entiende mi entrada"
+  and `volumedetect` shows `max_volume: 0.0 dB` (clipping), clean it BEFORE rendering: high-pass the rumble, add a
+  presence boost for intelligibility, gently compress, and loudnorm with `TP=-1.5` to pull the peaks off the ceiling.
+  `ffmpeg -i source.mp4 -c:v copy -af "highpass=f=85,equalizer=f=3000:width_type=q:w=1.2:g=3,acompressor=threshold=-18dB:ratio=3:attack=10:release=200:makeup=2,loudnorm=I=-16:TP=-1.5:LRA=11" -c:a aac -b:a 192k source.mp4`
+  (on the "1000 dólares" YT intro this took peaks 0.0 → −1.5 dB and added clarity). Point `<audio id="bg-audio">` at it.
 - **Transitions (whoosh + flash)** — subtle. Synth `whoosh.mp3` (pink-noise burst + bandpass + fades), build
   ONE `sfx_bed.mp3` with whooshes at the cut/zoom times via `adelay`+`amix` (one file avoids
   `duplicate_media_discovery_risk`), `data-volume` ~0.4. Pair each with a 1-frame white `#flash`
@@ -117,6 +140,8 @@ For recurring clients, keep a `Recursos/{fotos,videos}/` folder of THEIR real ph
 video: scan it, read/understand every asset, and AUTO-place the matching one as "by the way" support when the VO
 hits that topic (e.g. his face/IG screenshot on "+200 mil seguidores"; a lifestyle/car shot on the aspirational
 close). Keep a running catalog in memory. Real client assets (proof, lifestyle) beat generic stock for trust.
+Include **testimonial screenshots** in the library — drop them as bottom-corner insets on authority/proof beats
+("he generado millones para mis clientes" → Martín/Sergio/Alejandra testimonials). They're usually 16:9 → 16:9 frames.
 
 ## Openings — keep each ad in a series DIFFERENT (A/B)
 Every ad in a series must open differently. Used so far on Criolipólisis: **01** baseline · **03** text-hook card
@@ -147,6 +172,11 @@ Every ad in a series must open differently. Used so far on Criolipólisis: **01*
 - **"Two talking faces" (avatar artifact)**: when a bg poster also lip-syncs, AI bg-removal KEEPS it (it's a human).
   Reframe/crop it out, cover with a small medallion, or drop the take.
 - **iPhone/HDR footage → convert to SDR BEFORE rendering.** iPhone records HDR (HLG, bt2020, 10-bit). The HyperFrames HDR render path is slow/unstable and times out ("HDR frame extraction failed for bg-video"). Tonemap to SDR first: `ffmpeg -i in.mp4 -vf "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p" -color_primaries bt709 -color_trc bt709 -colorspace bt709 -c:a copy out.mp4`. Verify ffprobe color_transfer = bt709 (not arib-std-b67/smpte2084).
+- **iPhone clips arrive ROTATED — bake the rotation before using.** Phone "vertical" clips are often stored as
+  `1920x1080` with a `rotation:-90` display-matrix side-data (ffprobe `-show_entries stream_side_data=rotation`). The
+  renderer may ignore the flag and show them sideways. Re-encode to bake it (autorotate is ON by default when you
+  re-encode): `ffmpeg -i in.mp4 -c:v libx264 -preset fast -crf 20 -an out.mp4` → a true upright `1080x1920`. A tonemap
+  pass also bakes it. THEN size the inset frame to the now-correct orientation (vertical → 4:5; see masked-insets above).
 - **Export has native clips but NO GSAP overlays (captions/cards/diagram)?** The inline script threw before `window.__timelines["main"] = tl`, so the timeline never registered → only `class="clip"` media renders. Fix: (1) register the timeline IMMEDIATELY after `gsap.timeline()`, (2) avoid `getTotalLength()` on SVG when building (throws in headless render though the Studio preview works) — use a fixed `stroke-dasharray` for draw-on arrows. Verify the EXPORT by extracting frames, not just the preview.
 - Kie AI Nano Banana: env var `KIE_API_KEY` (see the image-generation section for models/pricing/Spanish-text rule).
 
