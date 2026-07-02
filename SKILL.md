@@ -63,10 +63,25 @@ Keep any **baked captions + existing b-roll**. Put overlays OUTSIDE the caption 
   it ugly — Diego: "no quedan bien, hazlos más verticales, 4:5". So: vertical clips/portrait photos → **4:5** rounded
   frame; landscape clips, IG/testimonial screenshots → **16:9** frame; cover for photos/video, contain when on-image text
   must stay readable. Frame = gold border + radius + shadow; pop in (`back.out`) + slow ken-burns, fade out.
-- **Layout discipline — never cover the centered face; texts TOP, photos BOTTOM.** Diego flagged insets that "me tapan
-  la cara" and "elementos encimados al final". Rules: keep insets on the SIDES / bottom corners, never centered over the
-  face; in dense sections (stats + proof) put **stat/text cards along the TOP and photo/testimonial insets along the
-  BOTTOM corners**, max ~2 insets on screen at once, and STAGGER their windows so they don't pile up.
+- **⚠️ NEVER PUT ANYTHING ON THE FACE — hard rule (Diego repeated this 3+ times).** ANY added element —
+  text card, chip, badge, inset image, AI background, diagram, explanation — must go in a FACE-FREE zone, NEVER
+  over the presenter's face. Diego: "me los estás colocando encima de la cara… no me los vuelvas a poner encima de la cara",
+  "utiliza el espacio entre el mentón y la parte de abajo de los subtítulos". The zones, in priority order:
+  1. **The "chin band"** — the space BETWEEN the chin and the top of the subtitles (her chest/torso; a dark top is an
+     ideal backdrop). This is Diego's #1 preferred spot for text cards/chips/CTA. Measure where the chin sits per video.
+  2. **Top band** — only the area clearly ABOVE the head (not the forehead). Many seated/standing shots leave little room
+     here, so the chin band usually wins.
+  3. **Over a full-screen visual** — when a before/after or b-roll cutaway covers the whole frame (no presenter face),
+     text reveals (brand, product, value) can sit on top. Time the text to the visual's window so it never lingers onto her face.
+  Before placing ANY element, locate the face bounding box (grab a frame) and confirm the element sits OUTSIDE it.
+  If the closing/hero "needs" the center, either put it in the chin band, show it over a full-screen visual, or — last
+  resort — dim the whole frame with a scrim AND keep the text below the face. Keep insets on the SIDES / bottom corners,
+  max ~2 on screen at once, STAGGERED. When unsure whether something covers the face: assume it does, and move it down.
+  - **MANDATORY procedure (do this BEFORE writing any overlay, every video — Diego has rejected face-coverage 4+ times):**
+    1. Grab a clean frame with `drawgrid=w=iw/10:h=ih/10` and read the **chin Y** and the face bounding box (in px).
+    2. For a vertical 1080×1920 talking-head, the chin sits ~y760–820. Set the **graphics/box/screenshot container `top` to ≥ chinY+40** (≈ `top:840px`) and keep its bottom above the caption band. Captions live at `bottom:140–150px`. So the **only safe band is roughly y840–1450 (over the torso)** — put EVERY card/chip/diagram/screenshot/AI-image/green-screen-label there. The hook/title goes there too (Diego: "de entrada ya me tapas la cara"). NEVER `top:` in the 150–800 range on a vertical talking head — that is the face.
+    3. **Strong-zoom caveat + the WINNING layout (Diego, anuncio-06/07):** when the camera punches in (scale ~1.4–1.5 on every ~4s of an alternating zoom), the face ENLARGES and the chin DROPS — so a LOW chin-band box (top:1080+) gets covered by the zoomed chin/mouth. The low band only works WITHOUT a strong zoom. With a strong alternating zoom, **anchor EVERY top element by its BOTTOM at the hairline instead**: `top:auto; bottom:1440px;` (lower edge ≈ where the forehead ends, "rozando el nacimiento del pelo"). This one rule survives both zoom states (zoom-in drops the head BELOW the box; zoom-out keeps the box just above the hairline) AND keeps boxes out of the **Meta-Ads top-crop zone** (elements pegged to `top:80–150` get cut off in feed/placement crops — Diego: "muy arriba, va a quedar cortada"). Apply the SAME `bottom:1440` to cards, chips, badges, `.fslab` labels on b-roll, AND `.ba-tag` on before/afters — all top labels, not just the text cards (Diego flagged the b-roll labels separately). Then the closing hero (no zoom) can sit low (top:1080) over the chest. Full-frame overlays (green screen) still need z-index ≥ ~40 over the transformed `#cam-wrap`.
+    4. **Verify in the render, not just the preview:** extract a frame inside EACH overlay's time window and confirm the face is fully clear. If any element touches the face, move it down and re-check. Treat "looks fine in the editor" as not verified.
 - **Zoom punch-ins** on emphasis. Gentle = scale ~1.09, one yoyo, `sine.inOut`, ~0.8s. Aggressive (when asked)
   = punch to scale ~1.4–1.45, HOLD ~2s, then pull back. **Origin MUST sit on the subject's face, not 50%** —
   if they sit off-center, measure face x/y with an ffmpeg `drawgrid=w=iw/10:h=ih/10` frame and set
