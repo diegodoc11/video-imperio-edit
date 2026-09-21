@@ -5,6 +5,7 @@ description: >-
   ads (Meta/TikTok) and 16:9 YouTube intros/long-form. Use whenever the user asks to "edit
   this video", add support material / b-roll, "make it more dynamic", add zooms, captions
   (incl. karaoke word-highlight), AI support images, badges, music, sound effects, or export.
+  Includes the iPhone HDR reel pipeline (magenta overlay keyed over the untouched HLG master).
   Encodes a preview-first workflow, the enhancement playbook, AI image generation (Kie Nano
   Banana) + royalty-free b-roll (Pexels/Pixabay), a client resource library, and the technical
   gotchas learned shipping these.
@@ -25,8 +26,9 @@ these videos. Always still follow the core HyperFrames rules (paused GSAP timeli
 ## Workflow (always)
 1. **Analyze the source first**: `ffprobe` (duration/res/fps/audio) + a **contact sheet**
    (`ffmpeg -vf "fps=1/3,scale=170:302,tile=5x4"`) to map presenter-vs-b-roll segments. Don't guess.
-2. **Transcribe for content/timing**: `npx hyperframes transcribe source.mp4 --model medium --language es`.
-   NEVER a `.en` model for Spanish (it translates). `small` silently TRUNCATES long clips — use `medium`.
+2. **Transcribe for content/timing**: `npx hyperframes transcribe source.mp4 --model large-v3 --language es`
+   (`medium` also works; `large-v3` gets names/brands right more often).
+   NEVER a `.en` model for Spanish (it translates). `small` silently TRUNCATES long clips.
    Set the composition `data-duration` from the SOURCE (ffprobe), NOT the transcript end.
    **Fix Whisper mishears** before building (names, brand terms — e.g. "Osorio"→"Soria", "Claude"→"cloud").
 3. **Iterate in the LIVE PREVIEW, not renders** (saves time + tokens): run
@@ -131,6 +133,62 @@ Keep any **baked captions + existing b-roll**. Put overlays OUTSIDE the caption 
    - Big bold (~58px @1080p) + strong `text-shadow` so it reads over bright b-roll.
    (lint flags these runtime-built spans as `__unresolved__` overlapping-tween warnings — harmless.)
 
+## iPhone HDR reels — magenta-overlay pipeline (validated on 8 reels, 2026-08/09)
+For vertical talking-head reels shot on iPhone (HEVC Main10, HLG). The HDR master is NEVER re-graded: HyperFrames
+renders ONLY the graphics layer on a magenta background, and ffmpeg keys it over the untouched master.
+Generator template: `templates/build_overlay.py`.
+1. **Prep**
+   - `ffmpeg -i raw.MP4 -map 0:v:0 -map 0:a:0 -c copy source.mp4` (drops the extra iPhone metadata tracks).
+   - Map the shots before planning: a per-second contact sheet `-vf "fps=1,<TM>,scale=180:320,tile=13x6" -frames:v 1`
+     (tile n = second n, row-major) + exact cut times on an SDR proxy:
+     `ffmpeg -i proxy.mp4 -vf "scale=270:480,select='gt(scene,0.25)',metadata=print:file=-" -an -f null -`.
+     `<TM>` = the hable tonemap chain from the gotchas — for LOOKING only, never for the deliverable.
+     (ffmpeg `drawtext` segfaults without fontconfig on Windows — skip frame labels.)
+   - Measure the chin with `drawgrid=w=iw:h=ih/20` on a tonemapped frame at the START **and** at the END: the
+     presenter moves (chin went y≈1000 → 1080 within one reel). Cards must clear the lowest chin.
+2. **Transcribe** (`large-v3`) → `words_fixed.json`. Whisper glues the conjunction "Y" to the next word
+   ("Yyo", "Yaquí", "Yahora", "Ysi") → split it into two words; fix names/brands ("Claudia"→"Claude",
+   "la guía"→"la IA", "MetaAds"→"Meta Ads").
+3. **Audio** — clean voice, then a LOW music bed that ducks under it:
+   - voice → `voice.wav`: `highpass=f=85,equalizer=f=3000:width_type=q:w=1.2:g=3,acompressor=threshold=-20dB:ratio=3:attack=10:release=200:makeup=2,loudnorm=I=-16:TP=-1.5:LRA=11`
+     (also rescues raws clipped at 0.0 dB).
+   - mix → `final_audio.wav` (music input with `-stream_loop -1`):
+     `[1:a]atrim=0:DUR,asetpts=N/SR/TB,volume=0.20,afade=t=in:st=0:d=0.5,afade=t=out:st=<DUR-1.3>:d=1.2[mus];[0:a]asplit=2[v1][vsc];[mus][vsc]sidechaincompress=threshold=0.04:ratio=9:attack=8:release=280:makeup=1[duck];[v1][duck]amix=inputs=2:duration=first:normalize=0[mix];[mix]loudnorm=I=-14:TP=-1.5:LRA=11`
+4. **Support material**
+   - B-roll: `Get-Broll.ps1 -Orientation portrait -Count 2` per idea → look at a contact sheet of the candidates → pick
+     (reject off-brand ones, e.g. face tattoos, toy robots) → conform each to its exact slot:
+     `ffmpeg -ss S -i clip.mp4 -t D -an -vf "scale=1080:1920:force_original_aspect_ratio=increase,crop=1080:1920,fps=60,format=yuv420p" -c:v libx264 -crf 17 p_name.mp4`.
+   - AI images: upscale to 1080×1920 (`scale=...:flags=lanczos,crop=1080:1920`) before use. **Never repeat an AI image
+     in consecutive reels** — `md5sum` the library against the other projects' assets; if used, generate new ones (~$0.02 each).
+   - Frames from `.mov` files: put `-ss` AFTER `-i` — fast seek on .mov returned the wrong frames.
+5. **`build_overlay.py`** — data lists → one `index.html` on `#FF00FF`:
+   - `CUTS`: full-screen b-roll as opaque `class="cut clip"` video/img INSIDE the overlay (they cover the magenta, so they
+     show over the master), slow zoom 1.10→1.0.
+   - `CARDS`: one card each. `GROUPS`: lists whose items light up ONE BY ONE at each word's timestamp (`t-0.10`).
+   - Scale-only animation, GSAP `xPercent/yPercent` centering (see gotchas).
+   - Captions: white Nunito 900 chunks (≤2 words / ≤15 chars) at `top:1545px`. `SUB_HOLE` hides them while an embedded
+     clip plays its own voice + baked text (e.g. a demo ad inside the reel); `SUB_END` stops them when the CTA appears.
+   - Spanish accents in cards via HTML entities (`&aacute;`, `&Eacute;`, `&ntilde;`).
+6. **Preview → export**
+   - `python build_overlay.py preview` + `npx hyperframes preview . --port NNNN`; iterate there (see gotcha).
+   - On OK: `python build_overlay.py` → `npx hyperframes render . --fps 60 --quality high --crf 14 --output renders/overlay-magenta.mp4` → composite:
+     `ffmpeg -y -i source.mp4 -i renders/overlay-magenta.mp4 -i final_audio.wav -filter_complex "[1:v]zscale=tin=bt709:min=bt709:pin=bt709:rin=tv:t=linear:p=bt709,format=gbrpf32le,exposure=exposure=2.0,zscale=pin=bt709:p=bt2020:t=arib-std-b67:m=bt2020nc:r=tv,format=yuv444p10le,format=yuva444p10le,chromakey=0xFF00FF:0.30:0.02[ovl];[0:v][ovl]overlay=0:0:format=yuv420p10:shortest=1[v]" -map "[v]" -map 2:a -c:v libx265 -preset fast -crf 18 -pix_fmt yuv420p10le -tag:v hvc1 -color_primaries bt2020 -color_trc arib-std-b67 -colorspace bt2020nc -color_range tv -c:a aac -b:a 192k renders/FINAL.mp4`
+   - Timing: a 77 s reel ≈ 5 min overlay render + ~4 min composite. Even a one-cutaway change means a full re-export —
+     say so up front ("¿por qué tanta demora si era una cosita?"), and show small changes in the preview first.
+   - `hyperframes snapshot` with many videos: add `--timeout 40000` and keep heavy intermediates OUT of `assets/`.
+7. **Verify before saying "listo"**: ffprobe (`hevc Main 10`, `arib-std-b67`, `60/1`, full duration); a tonemapped grid of
+   ~18 frames covering every card window (face clear, cards whole, no purple wash, b-roll opaque); `volumedetect` on speech
+   windows (final within ~2–3 dB of `voice.wav`) and `max_volume ≤ -1.5 dB`.
+
+**Diego's reel style (approved / corrected):**
+- **Everything in the chin band** (between chin and captions; card center ≈ y1240–1260). Instagram's feed/grid preview
+  crops a 9:16 reel to ~4:5, so anything above y≈285 or below y≈1635 gets cut off.
+- **Lots of b-roll from the start**: face + hook card for the first ~2 s, then a cutaway every few seconds tied to the
+  words ("pusiste muy poquito material de apoyo en los primeros segundos"). Covering ~50–60% of the talking-head time is fine.
+- **Lists light up one per spoken word**, never all at once. End on a **CTA box** ("Comenta PALABRA · y te envío el video 👇").
+- Rock bed (`action-promo-rock`) low + ducked.
+- "Quita / mueve el b-roll X": change only that `CUTS` entry, keep the rest as approved.
+
 ## Nano Banana image generation (Kie AI)
 Reusable generator: `Editor Videos/_tools/Get-NanoBanana.ps1 -PromptsJson <prompts.json> -OutDir <proj>/assets/img [-Model google/nano-banana] [-Size 16:9|9:16]`.
 - API: POST `api.kie.ai/api/v1/jobs/createTask` (`Authorization: Bearer $env:KIE_API_KEY`,
@@ -187,6 +245,13 @@ Every ad in a series must open differently. Used so far on Criolipólisis: **01*
 - **"Two talking faces" (avatar artifact)**: when a bg poster also lip-syncs, AI bg-removal KEEPS it (it's a human).
   Reframe/crop it out, cover with a small medallion, or drop the take.
 - **iPhone/HDR footage → convert to SDR BEFORE rendering.** iPhone records HDR (HLG, bt2020, 10-bit). The HyperFrames HDR render path is slow/unstable and times out ("HDR frame extraction failed for bg-video"). Tonemap to SDR first: `ffmpeg -i in.mp4 -vf "zscale=t=linear:npl=100,format=gbrpf32le,zscale=p=bt709,tonemap=tonemap=hable:desat=0,zscale=t=bt709:m=bt709:r=tv,format=yuv420p" -color_primaries bt709 -color_trc bt709 -colorspace bt709 -c:a copy out.mp4`. Verify ffprobe color_transfer = bt709 (not arib-std-b67/smpte2084).
+- **⚠️ BUT if the client compares against the raw iPhone clip and rejects the SDR look ("se dañó el color"), DO NOT tonemap the master — keep the deliverable HDR and lift the SDR pieces instead.** ANY tonemap changes the footage's look; Diego rejects every variant (mobius washed, hable "dañado") when viewed next to the original on his phone. Validated recipe (2026-08, "pongamos a prueba"): master stays untouched HLG 10-bit; every SDR insert (montages, HyperFrames overlay renders, b-roll) gets brightness-lifted ~4x into HLG:
+  `zscale=tin=bt709:min=bt709:pin=bt709:rin=tv:t=linear:p=bt709,format=gbrpf32le,exposure=exposure=2.0,zscale=pin=bt709:p=bt2020:t=arib-std-b67:m=bt2020nc:r=tv,format=yuv420p10le` + `-color_primaries bt2020 -color_trc arib-std-b67 -colorspace bt2020nc -color_range tv`, then concat/overlay everything as yuv420p10le.
+  Traps that cost a full afternoon: (1) `zscale`'s `npl` does NOTHING for bt709 input — it is not a brightness knob, use `exposure` (stops: 2.0 = 4x) in linear float; (2) SDR placed at the "standard" level always looks dark next to iPhone HDR (~230 vs ~450-650 YAVG); (3) don't judge by full-frame YAVG when the insert has a dark design background — crop-measure the content panel and match it to the source footage (~450-650); (4) the PC monitor lies about HDR — Diego verifies on his phone, send the file there; (5) **the HDR deliverable MUST be HEVC Main10 (`-c:v libx265 -crf 18 -pix_fmt yuv420p10le -tag:v hvc1` + the bt2020/arib-std-b67 tags)** — H.264 High10 (`libx264` + yuv420p10le) won't play in Windows/most players ("no lo reproduce el reproductor"); iPhone masters are HEVC Main10, match them. Intermediates can stay H.264 10-bit; convert at the last step.
+- **Green/magenta-screen overlay layer: keep `chromakey` blend LOW (0.02), and pick the key color your DESIGN doesn't use.** Compositing a HyperFrames overlay render onto footage: `chromakey=0x<COLOR>:0.15:0.02`. Two traps hit in production: (1) a **green** key eats brand greens in the design (borders, numbers vanished) — use **magenta `#FF00FF`** when the design uses green; (2) a high **blend** (0.08) makes *skin tones* semi-transparent, so full-screen b-roll with faces ghosts the underlying presenter through it ("los cutaways salen semitransparentes"). **Calibrated values when the overlay is color-converted to HLG before keying: `chromakey=0xFF00FF:0.30:0.02`.** The conversion SHIFTS the key color, so a tight similarity no longer matches it — 0.15-0.22 leaves a purple wash over the whole frame, 0.40 erases the cards themselves, 0.30 is the sweet spot (background gone, skin opaque, cards intact). The **blend** is what causes skin bleed — keep it at 0.02, never 0.08. Symptom check: a suspiciously SMALL output file (flat magenta compresses to nothing) means the key failed — verify frames, not just the file. Animate overlay elements with **scale only, never opacity fades** (a half-faded element blends with the key color and the key can't remove it).
+- **Previewing the HDR/magenta pipeline live (Diego hates waiting a full render for small changes):** give `build_overlay.py` a `preview` mode that puts a tonemapped SDR H.264 proxy of the source (`preview_base.mp4`, with the mixed audio, `data-has-audio="true"`, track 0, root bg black) UNDER the overlay; iterate in `hyperframes preview`, and only on his OK rebuild without the flag (magenta) → render → chroma composite. Tell him the preview colors differ slightly; the export keeps his HDR.
+- **Cards shifted left in the render:** CSS `transform:translate(-50%,-50%)` + GSAP `scale` makes GSAP bake the translate into PIXELS measured before the web fonts load (Anton/Poppins) → wide cards end up off-center. Center with GSAP instead: CSS only `left:50%`, and `gsap.set(el,{xPercent:-50,yPercent:-50,scale:0.001})`.
+- **Two subtitles overlapping for a frame:** if a chunk shows at `start-0.04`, hide the previous one at `next-0.06` (not `next-0.02`).
 - **iPhone clips arrive ROTATED — bake the rotation before using.** Phone "vertical" clips are often stored as
   `1920x1080` with a `rotation:-90` display-matrix side-data (ffprobe `-show_entries stream_side_data=rotation`). The
   renderer may ignore the flag and show them sideways. Re-encode to bake it (autorotate is ON by default when you
@@ -207,6 +272,9 @@ After the FINAL is approved, the client often wants the post-ready copy AND the 
   **solution** (the tools/diagram from the video, e.g. Claude + APIs to ElevenLabs/Kie AI/Pexels) → **CTA with a
   comment keyword** ("Comenta AUTOMATIZAR y te paso el tutorial") → a block of niche **hashtags**. Save it next to
   the project as `caption-ig.txt` so it's reusable.
+- **Auto-publishing (Zernio)**: a "success" log does NOT mean Instagram accepted the video — poll the post status and
+  retry Instagram alone if it failed. TikTok direct posting is often "at capacity" → send it as a draft to the Creator
+  Inbox (`tiktokSettings.draft: true`) and tell the user to publish it from the TikTok app.
 - **Send to client's Telegram**: a Telegram bot is configured in the `Carruseles IG Premium` / `carruseles-ig`
   projects — creds load from env vars `TELEGRAM_BOT_TOKEN` / `TELEGRAM_CHAT_ID` or those projects' `config.json`
   (`telegram_bot_token` / `telegram_chat_id`). **NEVER hard-code or publish the token** — read it at runtime.
