@@ -1,62 +1,107 @@
-# 🎬 video-imperio-edit — Skill de edición de video con IA (HyperFrames)
+# video-imperio-edit — tu editor de reels con IA (skill de Claude Code)
 
-Skill para **Claude Code** que edita videos talking-head — **anuncios verticales 9:16** (Meta/TikTok) e **intros/videos de YouTube 16:9** — usando HyperFrames: **subtítulos karaoke**, **imágenes de IA (Nano Banana)**, **b-roll de Pexels/Pixabay**, zooms, tarjetas de stats, **música con ducking**, efectos de transición (whoosh/flash) y render final verificado.
+Le pasas un video tuyo hablando a cámara y te lo devuelve **editado y listo para subir**: sin tus equivocaciones,
+con gancho desde el segundo 0, subtítulos, tarjetas y listas que aparecen **justo cuando dices la palabra** (y nunca
+te tapan la cara), pruebas reales, música que baja sola cuando hablas y tu llamado a la acción.
 
-Creado por **Diego Osorio** · Método Escala / comunidad **Imperio**.
+Hecha por [Diego Osorio](https://instagram.com/soydiegoosorio) con lo que le funcionó editando sus propios reels.
 
----
+**[👉 Guía paso a paso, desde cero (Claude → Claude Code → la skill)](https://diegodoc11.github.io/video-imperio-edit/)**
 
-## ✅ Requisitos
-- **Node.js 20+** (trae `npx`).
-- **FFmpeg** y **Google Chrome** (HyperFrames renderiza con Chrome).
-- **whisper.cpp** para transcripción → `scoop install whisper-cpp` (Windows).
-- **PowerShell** (los scripts de `tools/` son `.ps1`).
-- HyperFrames se usa vía `npx hyperframes …` (sin instalación global).
+![Licencia](https://img.shields.io/badge/licencia-MIT-c0392b) ![Render](https://img.shields.io/badge/render-HyperFrames-0b84f3) ![Local](https://img.shields.io/badge/corre-en%20tu%20computador-2d6a5c)
 
-## 📦 Instalar la skill
+![Reels editados con la skill en sus 3 estilos](docs/img/ejemplo.jpg)
+
+## Instalar (copia y pega esto en Claude Code)
+
+```
+Instala esta skill de Claude Code: clónala desde https://github.com/diegodoc11/video-imperio-edit dentro de ~/.claude/skills/video-imperio-edit y corre su instalador (scripts/instalar.py). Si falta algún programa (Git, Python, Node.js, ffmpeg o whisper.cpp), instálalo conmigo paso a paso.
+```
+
+Después abre una conversación nueva para que Claude cargue la skill. ¿Aún no tienes Claude Code? Sigue la
+[guía desde cero](https://diegodoc11.github.io/video-imperio-edit/).
+
+A mano, en Windows (PowerShell):
+
+```powershell
+git clone https://github.com/diegodoc11/video-imperio-edit "$HOME\.claude\skills\video-imperio-edit"
+python "$HOME\.claude\skills\video-imperio-edit\scripts\instalar.py"
+```
+
+En Mac o Linux:
+
 ```bash
-npx skills add diegodoc11/video-imperio-edit
+git clone https://github.com/diegodoc11/video-imperio-edit ~/.claude/skills/video-imperio-edit
+python3 ~/.claude/skills/video-imperio-edit/scripts/instalar.py
 ```
-(Manual: copia `SKILL.md` y la carpeta `templates/` a `~/.claude/skills/video-ad-editing/`)
 
-## 🔑 API keys (variables de entorno)
-Todas tienen plan gratuito. En Windows déjalas fijas con `setx` y reinicia la terminal:
-| Servicio | Para qué | Conseguir | Variable |
+## Usarla
+
+```
+Edita este video con video-imperio-edit, estilo fucsia: C:\Videos\mi-video.mp4
+```
+
+1. **Limpia el video**: quita silencios y las frases que repetiste por equivocarte (las detecta frase por frase).
+2. **Transcribe** palabra por palabra, con el segundo exacto de cada una.
+3. **Arma la edición** en el estilo que elijas, con cada pieza entrando cuando la nombras.
+4. **Se revisa a sí misma** (que nada tape la cara, que todo quepa) y te da una **vista previa** en el navegador.
+5. Pides cambios y, cuando apruebas, **exporta** en 1080×1920 a 60 cuadros.
+
+| Estilo | Gancho | Subtítulos | Apoyo visual |
 |---|---|---|---|
-| **Pexels** | b-roll en video | https://www.pexels.com/api/ | `setx PEXELS_API_KEY "tu_key"` |
-| **Pixabay** | b-roll (variedad) | https://pixabay.com/api/docs/ | `setx PIXABAY_API_KEY "tu_key"` |
-| **KIE AI** | imágenes Nano Banana | https://kie.ai | `setx KIE_API_KEY "tu_key"` |
+| `tablero` | sticker blanco tipo Instagram | una palabra en MAYÚSCULAS | pizarra con letra de marcador que se escribe sola |
+| `fucsia` | escrito a mano | la palabra que dices, resaltada | tarjetas de logo + ficha "Acerca de" |
+| `stickers` | palabras a mano + papel rasgado | pequeños, 2-3 palabras | etiquetas, X rojas, chat, terminal |
 
-## 🛠️ Scripts incluidos (`tools/`)
-**Descargar b-roll** (Pexels primario, Pixabay de respaldo):
-```powershell
-.\tools\Get-Broll.ps1 -Query "money cash" -OutDir .\assets\broll -Count 2 -Orientation landscape
+Qué más puedes pedirle: "quita la marca de agua de abajo", "pon mi logo", "usa esta música", "cuando digo
+*mis resultados* muestra estas capturas", "edítalo como este reel" (le pasas una referencia).
+
+## Qué necesitas
+
+| | Para qué | Costo |
+|---|---|---|
+| Claude con plan Pro o superior | Claude Code (quien edita) | tu plan |
+| Git, Python 3.10+, Node.js 20+, ffmpeg, whisper.cpp | el motor (Claude te ayuda a instalarlos) | gratis |
+| ~4 GB de disco | modelo de transcripción | gratis |
+
+No pide llaves ni cuentas de terceros: transcribir, preparar y exportar corre en tu computador.
+Probada en Windows 11. En Mac está preparada para funcionar, pero se ha probado menos: si algo falla, abre un *issue*.
+
+**Música:** no viene incluida (derechos de autor). Deja una pista libre de derechos (por ejemplo de
+[Pixabay Music](https://pixabay.com/music/)) en `recursos/musica/`. Los efectos de sonido sí vienen.
+
+## Qué trae
+
 ```
-**Generar imágenes IA** (Nano Banana):
-```powershell
-.\tools\Get-NanoBanana.ps1 -PromptsJson .\prompts.example.json -OutDir .\assets\img -Model google/nano-banana -Size 16:9
+SKILL.md               instrucciones para Claude (flujo, reglas, estilos, tipos de escena)
+scripts/
+  instalar.py          entorno + programas + modelo de transcripción
+  preparar.py          cortes de silencio, transcripción por palabra, video SDR 1080x1920, seguimiento de la cara
+  frases.py            detector de equivocaciones (transcribe cada frase por separado)
+  kit.py               zona segura bajo la barbilla, mezcla de audio, fuentes, logos, quitar marca de agua
+  hoja.py              hoja de revisión con la hora de cada cuadro
+plantilla/
+  build.py             la plantilla: eliges estilo y llenas GANCHO, ESCENAS y CTA
+  recetas/             los build.py reales de 3 reels (tablero, fucsia, stickers) con los efectos avanzados
+recursos/              fuentes, efectos de sonido, logos (y tu música)
+docs/                  la guía de instalación (GitHub Pages)
 ```
-> 💲 **Precios KIE (aprox.)**: `nano-banana` ~$0.02/img · `nano-banana-2` ~$0.04 · `nano-banana-pro` ~$0.12. **WAN es video**, no imágenes.
-> ⚠️ Pide el texto de las imágenes **EN ESPAÑOL** (o sin texto) — los prompts en inglés escriben texto en inglés. Ver `prompts.example.json`.
 
-## 🚀 Flujo de trabajo
-1. **Analiza** la fuente: `ffprobe` + contact sheet (mapear dónde habla vs b-roll).
-2. **Transcribe**: `npx hyperframes transcribe source.mp4 --model large-v3 --language es`.
-3. **Arma** la composición e **itera en el preview en vivo** (no renders): `npx hyperframes preview <proj> --port 3010`.
-4. `npx hyperframes lint` + `inspect` (arregla errores).
-5. **Render final** + verifica frames y audio (voz + música).
+**¿En qué se diferencia de las otras skills de Diego?**
 
-## 🎞️ Reels grabados con iPhone (HDR) — nuevo
-El iPhone graba en HDR, y si le cambias el color al video original se ve "dañado" al lado del crudo. La solución que ya se probó en 8 reels:
-- HyperFrames produce **solo los gráficos** (tarjetas, listas, subtítulos, b-roll) sobre fondo **magenta**, y ffmpeg los pega encima del video original **sin tocarle el color**.
-- Plantilla lista: **[`templates/build_overlay.py`](templates/build_overlay.py)**. Llenas 3 listas (b-roll, tarjetas y listas que se encienden palabra por palabra) y genera la composición.
-- **Vista previa primero**: `python build_overlay.py preview` te deja revisar todo en vivo antes de exportar, que tarda varios minutos.
-- Audio listo para reels: limpieza de voz y música baja que se aparta sola cuando hablas.
-- Estilo que funciona en Instagram: tarjetas **entre el mentón y los subtítulos** (Instagram recorta arriba y abajo en la vista previa del feed), mucho b-roll desde el segundo 2 y CTA "Comenta PALABRA" al final.
+| Skill | Tú en el video | Para qué |
+|---|---|---|
+| **video-imperio-edit** (esta) | Grabado, a pantalla completa | Edición de reels: cortes, subtítulos, apoyo visual, CTA |
+| [reel-motion](https://github.com/diegodoc11/reel-motion) | Recortado dentro de un diseño animado | Reels que se ven producidos por un estudio |
+| [anuncios-animados](https://github.com/diegodoc11/anuncios-animados) | No apareces | Anuncio animado desde un guion, con voz de IA |
 
-Los comandos exactos (composición HDR, mezcla de audio, verificación) están en `SKILL.md` → sección *iPhone HDR reels*.
+## Créditos y licencias
 
-📖 Todo el detalle (técnicas, gotchas, motor de karaoke, etc.) está en **[`SKILL.md`](SKILL.md)**.
-
----
-*Hecho con HyperFrames + Claude Code.*
+- El código de esta skill: **MIT** (ver [LICENSE](LICENSE)).
+- Render: [HyperFrames](https://github.com/heygen-com/hyperframes) (Apache-2.0) · animación: [GSAP](https://gsap.com).
+- Transcripción: [whisper.cpp](https://github.com/ggml-org/whisper.cpp) (MIT). Seguimiento de la cara: [OpenCV](https://opencv.org) (Apache-2.0).
+- Fuentes: Montserrat, Inter, Poppins, Permanent Marker, Patrick Hand SC, Caveat, DM Serif Display y JetBrains Mono,
+  bajo SIL Open Font License 1.1 (ver `recursos/fonts/LICENCIAS.md`).
+- Logos: [simple-icons](https://simpleicons.org) (CC0). Las marcas pertenecen a sus dueños.
+- Efectos de sonido: sintetizados para esta skill, libres de usar.
+- Esta skill no está afiliada a Anthropic ni a HeyGen.

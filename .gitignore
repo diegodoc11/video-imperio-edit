@@ -1,0 +1,11 @@
+.venv/
+modelos/
+__pycache__/
+*.pyc
+recursos/musica/*.mp3
+recursos/musica/*.wav
+recursos/musica/*.m4a
+recursos/musica/*.ogg
+recursos/musica/*.flac
+.DS_Store
+Thumbs.db

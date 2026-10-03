@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cómo instalar el Editor de Reels con IA (Claude Code)</title>
+<meta name="description" content="Guía paso a paso, desde cero, para instalar gratis la skill de Claude Code que edita tus reels: cortes, subtítulos, tarjetas, música y CTA.">
+<meta property="og:title" content="Editor de Reels con IA — guía de instalación">
+<meta property="og:description" content="La skill de Claude Code que edita tus reels: corta tus equivocaciones, pone subtítulos, tarjetas que aparecen cuando hablas, música y CTA. Guía desde cero, gratis.">
+<meta property="og:image" content="https://diegodoc11.github.io/video-imperio-edit/img/og.jpg">
+<meta property="og:url" content="https://diegodoc11.github.io/video-imperio-edit/">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎬</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fondo: #EEE8DB; --tinta: #1F1D1A; --texto: #3A3733; --suave: #6E6A63;
+    --terra: #D9774F; --terra-osc: #B85C37; --rosa: #F6DED5; --carta: #FBF8F2; --linea: #E0D8C8; --term: #1E1C1A;
+    --serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+    --sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--fondo); color: var(--texto); font: 17px/1.6 var(--sans); }
+  main { max-width: 720px; margin: 0 auto; padding: 32px 22px 64px; }
+  .cabeza { display: flex; align-items: flex-end; gap: 18px; margin: 8px 0 18px; }
+  .cabeza img { width: 92px; height: auto; image-rendering: pixelated; flex: none; }
+  .etiqueta { display: inline-block; font: 600 13px/1 var(--mono); letter-spacing: .08em; color: var(--terra-osc); background: var(--rosa); padding: 8px 12px; border-radius: 999px; }
+  h1 { font: 400 clamp(40px, 8.5vw, 62px)/1.02 var(--serif); color: var(--tinta); margin: 14px 0 14px; letter-spacing: -.01em; }
+  h1 em, h2 em { color: var(--terra); }
+  .bajada { font-size: 19px; margin: 0 0 22px; } .bajada strong { color: var(--tinta); }
+  .muestra { margin: 0 0 26px; } .muestra img { display: block; width: 100%; border-radius: 14px; box-shadow: 0 6px 20px rgba(60,40,30,.16); }
+  .muestra figcaption { font-size: 13.5px; color: var(--suave); margin-top: 8px; }
+  .avisos { display: grid; gap: 10px; margin: 0 0 34px; padding: 0; list-style: none; }
+  .avisos li { background: var(--carta); border: 1px solid var(--linea); border-radius: 14px; padding: 12px 16px; font-size: 15.5px; }
+  .avisos li b { color: var(--tinta); }
+  .paso { position: relative; margin: 0 0 30px; padding: 22px 20px 20px; background: var(--carta); border: 1px solid var(--linea); border-radius: 20px; }
+  .num { position: absolute; top: -16px; left: 18px; width: 36px; height: 36px; border-radius: 50%; background: var(--terra); color: #fff; font: 700 17px/36px var(--sans); text-align: center; box-shadow: 0 2px 0 var(--terra-osc); }
+  h2 { font: 400 30px/1.15 var(--serif); color: var(--tinta); margin: 8px 0 10px; }
+  h3 { font: 700 16px/1.3 var(--sans); color: var(--tinta); margin: 18px 0 6px; }
+  .paso p { margin: 0 0 12px; } .paso p:last-child { margin-bottom: 0; }
+  .paso ol, .paso ul { margin: 0 0 12px; padding-left: 22px; } .paso li { margin: 4px 0; }
+  .ruta { font-weight: 700; color: var(--tinta); } .ruta .f { color: var(--terra); font-weight: 400; padding: 0 2px; }
+  a { color: var(--terra-osc); text-underline-offset: 3px; }
+  .boton { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 14px 0 12px; padding: 16px 20px; border-radius: 999px; background: var(--terra); color: #fff; text-decoration: none; font: 700 18px/1.2 var(--sans); box-shadow: 0 3px 0 var(--terra-osc); }
+  .boton:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--terra-osc); }
+  .boton.sec { background: #fff; color: var(--tinta); border: 1px solid var(--linea); box-shadow: 0 3px 0 var(--linea); }
+  .nota { font-size: 14.5px; color: var(--suave); }
+  .term { background: var(--term); border-radius: 14px; overflow: hidden; margin: 12px 0 0; box-shadow: 0 6px 20px rgba(30,20,15,.22); }
+  .term .barra { display: flex; align-items: center; gap: 7px; padding: 10px 14px; background: #2A2724; font: 12.5px var(--mono); color: #9E978C; }
+  .term .barra i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; } .term .barra span { margin-left: 8px; }
+  .term pre { margin: 0; padding: 14px 16px 16px; overflow-x: auto; font: 14px/1.7 var(--mono); color: #E8E2D6; white-space: pre-wrap; word-break: break-word; }
+  .term .p { color: var(--terra); } .term .g { color: #9E978C; } .term .o { color: #F08A5D; }
+  .copiar { margin-top: 10px; display: inline-flex; gap: 8px; align-items: center; cursor: pointer; border: 1px solid var(--linea); background: #fff; color: var(--tinta); border-radius: 999px; padding: 8px 14px; font: 600 14px var(--sans); }
+  .estilos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0 0; }
+  .estilo { background: #fff; border: 1px solid var(--linea); border-radius: 14px; padding: 12px; font-size: 14.5px; }
+  .estilo b { display: block; font: 400 22px/1.1 var(--serif); color: var(--terra-osc); margin-bottom: 4px; }
+  @media (max-width: 560px) { .estilos { grid-template-columns: 1fr; } }
+  .seccion { margin: 44px 0 0; } .seccion h2 { font-size: 32px; }
+  details { background: var(--carta); border: 1px solid var(--linea); border-radius: 14px; padding: 14px 16px; margin: 10px 0; }
+  summary { cursor: pointer; font-weight: 700; color: var(--tinta); } details p { margin: 10px 0 0; }
+  code { font: 14px var(--mono); background: #fff; border: 1px solid var(--linea); border-radius: 6px; padding: 1px 6px; }
+  footer { margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--linea); font-size: 15px; color: var(--suave); }
+  footer a { color: var(--tinta); font-weight: 700; text-decoration: none; } footer em { font-family: var(--serif); font-size: 19px; color: var(--terra); }
+</style>
+</head>
+<body>
+<main>
+
+  <div class="cabeza">
+    <img src="img/mascota-regalo.png" alt="">
+    <span class="etiqueta">GRATIS · DESDE CERO</span>
+  </div>
+
+  <h1>Tu <em>editor de reels</em> con IA, en tu computador</h1>
+  <p class="bajada">Es una skill de Claude Code. Le pasas un video tuyo hablando a cámara y te lo devuelve <strong>editado y listo para subir</strong>: sin tus equivocaciones, con subtítulos, tarjetas que aparecen justo cuando hablas, música y tu llamado a la acción.</p>
+
+  <figure class="muestra">
+    <img src="img/ejemplo.jpg" alt="Seis cuadros de reels editados con la skill: tablero escrito a mano, logos de Claude y ChatGPT, título a mano, ficha de una herramienta, etiquetas de papel y un diagrama">
+    <figcaption>Reels reales editados con esta skill, en sus 3 estilos: tablero, fucsia y stickers.</figcaption>
+  </figure>
+
+  <ul class="avisos">
+    <li>💻 <b>Necesitas un computador</b> con Windows o Mac (no sirve desde el celular).</li>
+    <li>💳 <b>Necesitas Claude con plan de pago (Pro o superior).</b> Claude Code no viene en el plan gratis.</li>
+    <li>⏱️ <b>La primera vez tarda entre 20 y 40 minutos</b>: Claude instala los programas y descarga el modelo que transcribe tu voz (unos 3 GB). Después, editar un reel de un minuto toma unos 20-30 minutos y casi todo lo hace solo.</li>
+  </ul>
+
+  <section class="paso">
+    <div class="num">1</div>
+    <h2>Ten tu cuenta de Claude con plan Pro</h2>
+    <p>Si ya pagas Claude Pro o Max, salta al paso 2. Si no, crea tu cuenta y activa el plan:</p>
+    <a class="boton" href="https://claude.com/pricing" target="_blank" rel="noopener">Ver planes de Claude →</a>
+    <p class="nota">El plan Pro es el más económico que incluye Claude Code. Todo lo pesado (transcribir y exportar) corre en tu computador, así que no gasta tu plan.</p>
+  </section>
+
+  <section class="paso">
+    <div class="num">2</div>
+    <h2>Descarga la app de Claude</h2>
+    <p>Instala la aplicación de escritorio de Claude e inicia sesión con tu cuenta.</p>
+    <a class="boton" href="https://claude.ai/download" target="_blank" rel="noopener">⬇ Descargar Claude para el computador</a>
+    <p class="nota">Ábrela al terminar y entra con el mismo correo de tu cuenta.</p>
+  </section>
+
+  <section class="paso">
+    <div class="num">3</div>
+    <h2>Abre <em>Claude Code</em></h2>
+    <p>Dentro de la app, entra a la pestaña <b>Code</b>. Ahí Claude puede trabajar con los archivos de tu computador.</p>
+    <p class="ruta">App de Claude <span class="f">→</span> pestaña Code <span class="f">→</span> elige una carpeta</p>
+    <p>Crea una carpeta para tus videos (por ejemplo <code>Documentos\Mis reels</code>) y elígela como carpeta de trabajo. Si Claude te pide permisos para leer archivos o correr comandos, acéptalos.</p>
+    <details>
+      <summary>¿Prefieres la terminal? (opcional)</summary>
+      <p>También puedes instalar Claude Code con un comando. En <b>Windows</b> abre PowerShell y pega:</p>
+      <div class="term"><div class="barra"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>PowerShell</span></div><pre>irm https://claude.ai/install.ps1 | iex</pre></div>
+      <p>En <b>Mac</b> abre Terminal y pega:</p>
+      <div class="term"><div class="barra"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>Terminal</span></div><pre>curl -fsSL https://claude.ai/install.sh | bash</pre></div>
+      <p>Cierra y vuelve a abrir la terminal, entra a tu carpeta de videos y escribe <code>claude</code>. La primera vez te pide iniciar sesión en el navegador.</p>
+    </details>
+  </section>
+
+  <section class="paso">
+    <div class="num">4</div>
+    <h2>Instala la skill (copia y pega)</h2>
+    <p>En Claude Code pega este mensaje y dale Enter. Claude descarga la skill, revisa qué programas te faltan y te ayuda a instalarlos uno por uno:</p>
+    <div class="term">
+      <div class="barra"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>Claude Code</span></div>
+      <pre><span class="p">❯</span> Instala esta skill de Claude Code: clónala desde https://github.com/diegodoc11/video-imperio-edit dentro de ~/.claude/skills/video-imperio-edit y corre su instalador (scripts/instalar.py). Si falta algún programa (Git, Python, Node.js, ffmpeg o whisper.cpp), instálalo conmigo paso a paso.</pre>
+    </div>
+    <button class="copiar" type="button" data-copiar="Instala esta skill de Claude Code: clónala desde https://github.com/diegodoc11/video-imperio-edit dentro de ~/.claude/skills/video-imperio-edit y corre su instalador (scripts/instalar.py). Si falta algún programa (Git, Python, Node.js, ffmpeg o whisper.cpp), instálalo conmigo paso a paso.">📋 Copiar el mensaje</button>
+    <p style="margin-top:16px">Cuando el instalador diga <b>"Listo para usar"</b>, <b>cierra esa conversación y abre una nueva</b>: así Claude carga la skill recién instalada.</p>
+    <p class="nota">Si te pide permiso para instalar programas, acepta. En Windows suele usar Scoop (un instalador de programas gratuito); en Mac, Homebrew.</p>
+  </section>
+
+  <section class="paso">
+    <div class="num">5</div>
+    <h2>Edita tu <em>primer reel</em></h2>
+    <p>Graba tu video vertical, déjalo en tu carpeta y escríbele a Claude Code:</p>
+    <div class="term">
+      <div class="barra"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span>Claude Code</span></div>
+      <pre><span class="p">❯</span> Edita este video con video-imperio-edit, estilo fucsia: mi-video.mp4</pre>
+    </div>
+    <button class="copiar" type="button" data-copiar="Edita este video con video-imperio-edit, estilo fucsia: ">📋 Copiar la frase</button>
+    <h3>Elige tu estilo</h3>
+    <div class="estilos">
+      <div class="estilo"><b>tablero</b>Sticker blanco de gancho, una palabra de subtítulo en mayúsculas y una pizarra donde se escriben tus ideas.</div>
+      <div class="estilo"><b>fucsia</b>Título a mano, la palabra que dices resaltada y tarjetas de logo con su ficha. Ideal para listas de herramientas.</div>
+      <div class="estilo"><b>stickers</b>Palabras a mano, papel rasgado, etiquetas y X rojas. Ideal para historias y demostraciones.</div>
+    </div>
+    <h3>Qué hace Claude</h3>
+    <ol>
+      <li><b>Limpia el video</b>: quita silencios y las frases que repetiste por equivocarte.</li>
+      <li><b>Transcribe</b> palabra por palabra, con el segundo exacto de cada una.</li>
+      <li><b>Arma la edición</b>: gancho desde el segundo 0, subtítulos, cada tarjeta entra cuando la nombras y nada te tapa la cara.</li>
+      <li>Te da una <b>vista previa</b> en el navegador. Pides cambios ("el título más corto", "pon mi logo", "cambia el color").</li>
+      <li>Cuando apruebas, <b>exporta el video final</b> en 1080×1920 listo para Reels, TikTok o anuncios.</li>
+    </ol>
+  </section>
+
+  <section class="seccion">
+    <h2>Cómo grabar para que <em>quede mejor</em></h2>
+    <ul>
+      <li><b>Vertical</b>, tú solo, mirando a cámara. Sirve el celular.</li>
+      <li><b>Cabeza y pecho</b> en cuadro: el espacio del pecho es donde aparecen las tarjetas.</li>
+      <li>Buena luz y buen audio (un micrófono de solapa hace mucha diferencia).</li>
+      <li>Si te equivocas, <b>repite la frase completa</b> y sigue: la skill corta la toma mala.</li>
+      <li>Termina diciendo tu llamado a la acción ("comenta CLASE y te lo envío").</li>
+    </ul>
+  </section>
+
+  <section class="seccion">
+    <h2>Si algo no <em>funciona</em></h2>
+    <details>
+      <summary>No me aparece la pestaña "Code" en la app</summary>
+      <p>Revisa que tu plan sea Pro o superior y que la app esté actualizada. Si aún no aparece, usa la opción de la terminal del paso 3.</p>
+    </details>
+    <details>
+      <summary>Claude dice que falta Git, Python, Node.js, ffmpeg o whisper.cpp</summary>
+      <p>Dile <b>"instálalo conmigo"</b> y acepta los permisos. En Windows, si te lo pide, también puedes pegar esto en PowerShell: <code>Set-ExecutionPolicy -Scope CurrentUser RemoteSigned</code>, luego <code>irm get.scoop.sh | iex</code> y después <code>scoop install git python nodejs-lts ffmpeg whisper-cpp</code>. Cierra y abre la app al terminar.</p>
+    </details>
+    <details>
+      <summary>Claude no usa la skill cuando le pido editar</summary>
+      <p>Abre una <b>conversación nueva</b> después de instalarla y menciona "video-imperio-edit" en tu mensaje.</p>
+    </details>
+    <details>
+      <summary>¿Trae música?</summary>
+      <p>No, por derechos de autor. Baja una pista libre de derechos (por ejemplo de <a href="https://pixabay.com/music/" target="_blank" rel="noopener">Pixabay Music</a>) y dile a Claude "usa esta música: [archivo]". Los efectos de sonido sí vienen incluidos.</p>
+    </details>
+    <details>
+      <summary>Mi video trae una marca de agua abajo (BIGVU u otra app)</summary>
+      <p>Dile a Claude que la quite: la saca del cuadro con un pequeño acercamiento, sin taparla con cajas.</p>
+    </details>
+    <details>
+      <summary>¿Cuánto tarda y cuánto gasta de mi plan?</summary>
+      <p>Un reel de un minuto: unos 5 minutos preparándolo, el tiempo que tú tardes en aprobar la vista previa y unos 10 minutos exportando. Transcribir y exportar corren en tu computador; Claude solo diseña y revisa, así que el consumo del plan es bajo.</p>
+    </details>
+    <details>
+      <summary>¿Sirve para videos horizontales o de pantalla?</summary>
+      <p>No. Es para videos verticales de una persona hablando a cámara.</p>
+    </details>
+  </section>
+
+  <footer>
+    <p>Hecha por <a href="https://instagram.com/soydiegoosorio">@soydiegoosorio</a> con lo que me funcionó editando mis propios reels. El código está en <a href="https://github.com/diegodoc11/video-imperio-edit">GitHub</a> y la voy mejorando; cada vez que la instalas te llevas la versión más nueva.</p>
+    <p><em>Úsala, pruébala y compártela.</em></p>
+  </footer>
+
+</main>
+<script>
+  document.querySelectorAll(".copiar").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var t = b.getAttribute("data-copiar");
+      var listo = function () { var o = b.textContent; b.textContent = "✅ Copiado"; setTimeout(function () { b.textContent = o; }, 1600); };
+      if (navigator.clipboard) { navigator.clipboard.writeText(t).then(listo, function () {}); }
+    });
+  });
+</script>
+</body>
+</html>
