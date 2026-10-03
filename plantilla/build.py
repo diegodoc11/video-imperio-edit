@@ -9,6 +9,8 @@ Los tiempos se escriben con FRASES tal como quedaron en words.json ("la implemen
 Cada pieza aparece cuando se dice su frase y TODO va debajo de la barbilla (face.json), nunca sobre la cara.
 """
 import sys, os, json, html
+try: sys.stdout.reconfigure(encoding='utf-8', errors='replace'); sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+except Exception: pass
 
 P = os.path.dirname(os.path.abspath(__file__))
 SKILL = open(os.path.join(P, '_work', 'skill.txt'), encoding='utf-8').read().strip()

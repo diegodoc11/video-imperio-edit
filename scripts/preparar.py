@@ -16,6 +16,8 @@ Para quitar equivocaciones / repeticiones: corre frases.py, escribe los tramos m
 ( [[inicio, fin], ...] en segundos del CRUDO ) y vuelve a correr preparar.py.
 """
 import sys, os, json, re, shutil, subprocess, wave
+try: sys.stdout.reconfigure(encoding='utf-8', errors='replace'); sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+except Exception: pass
 import numpy as np
 
 SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

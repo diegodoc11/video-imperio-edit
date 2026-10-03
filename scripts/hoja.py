@@ -9,6 +9,8 @@ video-imperio-edit · HOJA  — hoja de contacto con la hora de cada cuadro (par
 (¿algo tapa la cara?, ¿los textos caben?, ¿cada pieza entra cuando se dice?).
 """
 import sys, cv2
+try: sys.stdout.reconfigure(encoding='utf-8', errors='replace'); sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+except Exception: pass
 from PIL import Image, ImageDraw, ImageFont
 
 def fuente(tam):

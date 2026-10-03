@@ -95,6 +95,13 @@ docs/                  la guía de instalación (GitHub Pages)
 | [reel-motion](https://github.com/diegodoc11/reel-motion) | Recortado dentro de un diseño animado | Reels que se ven producidos por un estudio |
 | [anuncios-animados](https://github.com/diegodoc11/anuncios-animados) | No apareces | Anuncio animado desde un guion, con voz de IA |
 
+## Esto es solo 1 de los agentes de Imperio
+
+Este editor es una pieza del equipo de agentes de IA de **Imperio**, el sistema con el que la IA hace el trabajo de
+marketing y trae las ventas de los negocios de mis clientes: guiones, anuncios, VSL, campañas en Meta Ads,
+carruseles y respuesta por WhatsApp e Instagram. Haces en 3 días lo que antes te tomaba 30; mis clientes han sumado
+entre 5.000 y 10.000 dólares extra cada mes a su facturación. **[Escríbeme "IMPERIO" por Instagram](https://ig.me/m/soydiegoosorio).**
+
 ## Créditos y licencias
 
 - El código de esta skill: **MIT** (ver [LICENSE](LICENSE)).

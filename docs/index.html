@@ -64,6 +64,17 @@
   details { background: var(--carta); border: 1px solid var(--linea); border-radius: 14px; padding: 14px 16px; margin: 10px 0; }
   summary { cursor: pointer; font-weight: 700; color: var(--tinta); } details p { margin: 10px 0 0; }
   code { font: 14px var(--mono); background: #fff; border: 1px solid var(--linea); border-radius: 6px; padding: 1px 6px; }
+  .loop { display: block; background: var(--rosa); border: 1px solid #EBC3B3; border-left: 6px solid var(--terra); border-radius: 14px;
+          padding: 14px 16px; margin: 0 0 30px; font-size: 16px; color: var(--tinta); text-decoration: none; }
+  .loop b { color: var(--terra-osc); } .loop span { display: block; margin-top: 6px; font-weight: 700; color: var(--terra-osc); }
+  .imperio { margin: 48px 0 0; padding: 26px 22px 24px; border-radius: 22px; background: var(--tinta); color: #E8E2D6; }
+  .imperio h2 { color: #fff; font-size: 34px; margin-top: 0; } .imperio h2 em { color: var(--terra); }
+  .imperio p { margin: 0 0 14px; } .imperio b { color: #fff; }
+  .imperio ul { list-style: none; padding: 0; margin: 0 0 18px; display: grid; gap: 8px; }
+  .imperio li { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 10px 14px; }
+  .imperio .cifra { font: 400 26px/1.25 var(--serif); color: #fff; margin: 6px 0 16px; }
+  .imperio .cifra em { color: var(--terra); }
+  .imperio .boton { margin-bottom: 8px; } .imperio .nota { color: #B9B2A6; }
   footer { margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--linea); font-size: 15px; color: var(--suave); }
   footer a { color: var(--tinta); font-weight: 700; text-decoration: none; } footer em { font-family: var(--serif); font-size: 19px; color: var(--terra); }
 </style>
@@ -89,6 +100,8 @@
     <li>💳 <b>Necesitas Claude con plan de pago (Pro o superior).</b> Claude Code no viene en el plan gratis.</li>
     <li>⏱️ <b>La primera vez tarda entre 20 y 40 minutos</b>: Claude instala los programas y descarga el modelo que transcribe tu voz (unos 3 GB). Después, editar un reel de un minuto toma unos 20-30 minutos y casi todo lo hace solo.</li>
   </ul>
+
+  <a class="loop" href="#imperio">🎁 <b>Este editor es solo 1 de los agentes de Imperio</b>, el equipo de IA que hace el marketing y trae las ventas de los negocios de mis clientes: con él hacen en 3 días lo que antes les tomaba 30.<span>Al final te cuento qué hacen los demás agentes ↓</span></a>
 
   <section class="paso">
     <div class="num">1</div>
@@ -201,6 +214,22 @@
       <summary>¿Sirve para videos horizontales o de pantalla?</summary>
       <p>No. Es para videos verticales de una persona hablando a cámara.</p>
     </details>
+  </section>
+
+  <section class="imperio" id="imperio">
+    <h2>Esto es solo <em>1 de los agentes</em> de Imperio</h2>
+    <p>Este editor te ahorra horas de edición. Pero en Imperio tengo <b>todo un equipo de agentes de IA</b> que hace el trabajo de marketing por ti y genera las ventas del negocio:</p>
+    <ul>
+      <li>✍️ Escriben tus guiones, tus anuncios y tu video de ventas (VSL).</li>
+      <li>🎬 Editan tus reels y crean anuncios animados, como este editor.</li>
+      <li>📊 Montan y ajustan tus campañas en Meta Ads.</li>
+      <li>🖼️ Diseñan tus carruseles y miniaturas.</li>
+      <li>💬 Responden por WhatsApp e Instagram y agendan a tus clientes.</li>
+    </ul>
+    <p class="cifra">Haces en <em>3 días</em> lo que antes te tomaba <em>30</em>.</p>
+    <p>Es exactamente lo mismo que usan mis clientes, que han sumado <b>entre 5.000 y 10.000 dólares extra cada mes</b> a su facturación.</p>
+    <a class="boton" href="https://ig.me/m/soydiegoosorio" target="_blank" rel="noopener">Escríbeme “IMPERIO” por Instagram →</a>
+    <p class="nota">Te cuento cómo funciona y si encaja con tu negocio.</p>
   </section>
 
   <footer>

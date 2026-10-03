@@ -12,6 +12,8 @@ video-imperio-edit · INSTALAR  (se corre UNA sola vez; se puede repetir sin pro
 Al final imprime la ruta del Python que debes usar para los demás scripts.
 """
 import sys, os, shutil, subprocess, urllib.request, platform
+try: sys.stdout.reconfigure(encoding='utf-8', errors='replace'); sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+except Exception: pass
 
 SKILL = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 WIN = platform.system() == 'Windows'; MAC = platform.system() == 'Darwin'
@@ -49,8 +51,14 @@ def main():
             print('creando entorno de Python (.venv)…', flush=True)
             subprocess.run([sys.executable, '-m', 'venv', VENV], check=True)
         print('instalando librerías (puede tardar unos minutos la primera vez)…', flush=True)
-        r = subprocess.run([PY, '-m', 'pip', 'install', '--quiet', '--disable-pip-version-check', '-r', os.path.join(SKILL, 'requirements.txt')])
-        (ok if r.returncode == 0 else falta).append('librerías de Python' + ('' if r.returncode == 0 else ' (pip falló: revisa tu conexión y vuelve a correr)'))
+        cmd = [PY, '-m', 'pip', 'install', '--disable-pip-version-check', '--retries', '5', '--timeout', '60', '-r', os.path.join(SKILL, 'requirements.txt')]
+        r = subprocess.run(cmd, capture_output=True, text=True)
+        if r.returncode:                                  # un corte de red pasajero: reintentar una vez
+            print('  reintentando la instalación de librerías…', flush=True)
+            r = subprocess.run(cmd, capture_output=True, text=True)
+        if r.returncode:
+            print((r.stderr or r.stdout)[-1200:])
+        (ok if r.returncode == 0 else falta).append('librerías de Python' + ('' if r.returncode == 0 else ' (pip falló: mira el error de arriba; revisa tu conexión y vuelve a correr)'))
 
     # 3) programas
     for exe, nombre, ayuda in (('ffmpeg', 'ffmpeg', como('scoop install ffmpeg', 'brew install ffmpeg', 'sudo apt install ffmpeg')),

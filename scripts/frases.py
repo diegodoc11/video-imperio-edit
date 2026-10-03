@@ -13,6 +13,8 @@ crudo, cortando en el silencio y dejando ~0.2 s de pausa) en  <proyecto>/_work/c
 y vuelve a correr preparar.py.
 """
 import sys, os, json, wave, io, time, shutil, subprocess, urllib.request, uuid
+try: sys.stdout.reconfigure(encoding='utf-8', errors='replace'); sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+except Exception: pass
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from preparar import buscar_modelo, arg
