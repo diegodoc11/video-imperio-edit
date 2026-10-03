@@ -15,7 +15,7 @@ Hecha por [Diego Osorio](https://instagram.com/soydiegoosorio) con lo que le fun
 ## Instalar (copia y pega esto en Claude Code)
 
 ```
-Instala esta skill de Claude Code: clónala desde https://github.com/diegodoc11/video-imperio-edit dentro de ~/.claude/skills/video-imperio-edit y corre su instalador (scripts/instalar.py). Si falta algún programa (Git, Python, Node.js, ffmpeg o whisper.cpp), instálalo conmigo paso a paso.
+Instala esta skill de Claude Code: clónala desde https://github.com/diegodoc1111/video-imperio-edit dentro de ~/.claude/skills/video-imperio-edit y corre su instalador (scripts/instalar.py). Si falta algún programa (Git, Python, Node.js, ffmpeg o whisper.cpp), instálalo conmigo paso a paso.
 ```
 
 Después abre una conversación nueva para que Claude cargue la skill. ¿Aún no tienes Claude Code? Sigue la
@@ -24,14 +24,14 @@ Después abre una conversación nueva para que Claude cargue la skill. ¿Aún no
 A mano, en Windows (PowerShell):
 
 ```powershell
-git clone https://github.com/diegodoc11/video-imperio-edit "$HOME\.claude\skills\video-imperio-edit"
+git clone https://github.com/diegodoc1111/video-imperio-edit "$HOME\.claude\skills\video-imperio-edit"
 python "$HOME\.claude\skills\video-imperio-edit\scripts\instalar.py"
 ```
 
 En Mac o Linux:
 
 ```bash
-git clone https://github.com/diegodoc11/video-imperio-edit ~/.claude/skills/video-imperio-edit
+git clone https://github.com/diegodoc1111/video-imperio-edit ~/.claude/skills/video-imperio-edit
 python3 ~/.claude/skills/video-imperio-edit/scripts/instalar.py
 ```
 
