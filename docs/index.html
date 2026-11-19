@@ -78,6 +78,23 @@
   footer { margin-top: 52px; padding-top: 22px; border-top: 1px solid var(--linea); font-size: 15px; color: var(--suave); }
   footer a { color: var(--tinta); font-weight: 700; text-decoration: none; } footer em { font-family: var(--serif); font-size: 19px; color: var(--terra); }
 </style>
+<style id="iv2">
+  .iv2top { display: block; background: var(--rosa, #F6DED5); border: 1px solid #EBC3B3; border-left: 6px solid var(--terra, #D9774F); border-radius: 14px; padding: 14px 16px; margin: 0 0 30px; font-size: 16px; line-height: 1.45; color: var(--tinta, #1F1D1A); text-decoration: none; }
+  .iv2top .iv2h { margin: 0 0 10px; }
+  .iv2top b { color: var(--terra-osc, #B85C37); }
+  .iv2top ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .iv2top li { display: flex; align-items: center; gap: 10px; margin: 0; }
+  .iv2top li img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; flex: none; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,.18); }
+  .iv2top .iv2mas { display: block; margin-top: 10px; font-weight: 700; color: var(--terra-osc, #B85C37); }
+  .imperio.iv2 h3.iv2ya { color: #fff; font: 700 18px/1.3 var(--sans, system-ui, sans-serif); margin: 22px 0 10px; }
+  .imperio.iv2 .iv2casos { display: grid; gap: 10px; margin: 0 0 18px; }
+  .imperio.iv2 .iv2caso { display: flex; gap: 12px; align-items: flex-start; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 14px; padding: 10px 12px; }
+  .imperio.iv2 .iv2caso img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; flex: none; border: 2px solid rgba(255,255,255,.25); }
+  .imperio.iv2 .iv2caso p { margin: 0; font-size: 15.5px; line-height: 1.45; }
+  .imperio.iv2 .iv2caso.iv2nat { display: block; padding: 0; overflow: hidden; }
+  .imperio.iv2 .iv2caso.iv2nat img { width: 100%; height: auto; aspect-ratio: 1 / 1; max-height: 440px; border-radius: 0; border: 0; display: block; object-fit: cover; object-position: 50% 15%; }
+  .imperio.iv2 .iv2caso.iv2nat p { padding: 12px 14px 14px; }
+</style>
 </head>
 <body>
 <main>
@@ -101,7 +118,15 @@
     <li>⏱️ <b>La primera vez tarda entre 20 y 40 minutos</b>: Claude instala los programas y descarga el modelo que transcribe tu voz (unos 3 GB). Después, editar un reel de un minuto toma unos 20-30 minutos y casi todo lo hace solo.</li>
   </ul>
 
-  <a class="loop" href="#imperio">🎁 <b>Este editor es solo 1 de los agentes de Imperio</b>, el equipo de IA que hace el marketing y trae las ventas de los negocios de mis clientes: con él hacen en 3 días lo que antes les tomaba 30.<span>Al final te cuento qué hacen los demás agentes ↓</span></a>
+  <a class="iv2top" href="#imperio">
+    <p class="iv2h">&#128640; <b>Lo que vas a instalar aquí es solo una pieza.</b> Los agentes Imperio completos ya trabajan solos en negocios reales:</p>
+    <ul>
+      <li><img src="img/caso-francia.jpg" alt="Francia Salazar" width="44" height="44"><span><b>Francia</b>, estética: factura unos <b>30.000 USD al mes</b>.</span></li>
+      <li><img src="img/caso-pablo.jpg" alt="Dr. Pablo Gavilanes" width="44" height="44"><span><b>Dr. Pablo Gavilanes</b>, ginecólogo: adicionó <b>+5.000 USD extras por mes</b>.</span></li>
+      <li><img src="img/caso-andres.jpg" alt="Andrés, dueño de un glamping" width="44" height="44"><span><b>Andrés</b>, glamping: <b>duplicó sus reservas en 60 días</b>.</span></li>
+    </ul>
+    <span class="iv2mas">Al final te cuento cómo funciona &darr;</span>
+  </a>
 
   <section class="paso">
     <div class="num">1</div>
@@ -218,19 +243,19 @@
     </details>
   </section>
 
-  <section class="imperio" id="imperio">
-    <h2>Esto es solo <em>1 de los agentes</em> de Imperio</h2>
-    <p>Este editor te ahorra horas de edición. Pero en Imperio tengo <b>todo un equipo de agentes de IA</b> que hace el trabajo de marketing por ti y genera las ventas del negocio:</p>
-    <ul>
-      <li>✍️ Escriben tus guiones, tus anuncios y tu video de ventas (VSL).</li>
-      <li>🎬 Editan tus reels y crean anuncios animados, como este editor.</li>
-      <li>📊 Montan y ajustan tus campañas en Meta Ads.</li>
-      <li>🖼️ Diseñan tus carruseles y miniaturas.</li>
-      <li>💬 Responden por WhatsApp e Instagram y agendan a tus clientes.</li>
-    </ul>
-    <p class="cifra">Haces en <em>3 días</em> lo que antes te tomaba <em>30</em>.</p>
-    <p>Es exactamente lo mismo que usan mis clientes, que han sumado <b>entre 5.000 y 10.000 dólares extra cada mes</b> a su facturación.</p>
-    <a class="boton" href="https://ig.me/m/soydiegoosorio" target="_blank" rel="noopener">Escríbeme “IMPERIO” por Instagram →</a>
+  <section class="imperio iv2" id="imperio">
+    <h2>Las empresas que sobrevivan serán las que usen <em>IA</em></h2>
+    <p>Los agentes Imperio hacen en <b>3 días el trabajo de todo un mes</b>. Reemplazan una nómina de 4 empleados (<b>2.000 a 4.000 USD al mes</b>) por una IA de <b>25 a 50 USD</b>.</p>
+    <p>Primero, los negocios que los usen van a multiplicar sus márgenes. Después, van a ser los únicos que queden: nadie podrá competir en precio con quien lo hace todo sin humanos lentos y caros.</p>
+    <h3 class="iv2ya">Ya está pasando:</h3>
+    <div class="iv2casos">
+      <div class="iv2caso"><img src="img/caso-francia.jpg" alt="Francia Salazar" width="56" height="56"><p><b>Francia Salazar</b>, estética: factura unos <b>30.000 USD al mes, 11.000 más que antes</b>, con los agentes trabajando solos.</p></div>
+      <div class="iv2caso"><img src="img/caso-pablo.jpg" alt="Dr. Pablo Gavilanes" width="56" height="56"><p><b>Dr. Pablo Gavilanes</b>, ginecólogo: <b>+5.000 USD extras al mes</b> en consultas, casi <b>30.000 USD extra en 6 meses</b>. Los agentes hacen el 95&nbsp;% del trabajo.</p></div>
+      <div class="iv2caso"><img src="img/caso-andres.jpg" alt="Andrés, dueño de un glamping" width="56" height="56"><p><b>Andrés</b>, glamping: sus reservas llevaban 3 años cayendo por la competencia; <b>las duplicó en 60 días</b>.</p></div>
+      <div class="iv2caso iv2nat"><img src="img/caso-natalia.jpg" alt="Natalia junto a su Lamborghini Urus" width="720" height="720" loading="lazy"><p><b>Natalia</b> se convirtió en <b>la vendedora #1 de bienes raíces en Dubái</b> gracias a los agentes Imperio y a mi acompañamiento. La premiaron con un <b>Lamborghini Urus avaluado en 300.000 USD</b>.</p></div>
+    </div>
+    <p>Te hacen el contenido y los anuncios, editan tus videos, publican por ti, hacen tus páginas web y tus campañas en Meta, y hasta responden tus mensajes y hacen seguimiento de forma automática. <b>Sin saber de tecnología.</b></p>
+    <a class="boton" href="https://ig.me/m/soydiegoosorio" target="_blank" rel="noopener">Escríbeme &ldquo;IMPERIO&rdquo; por Instagram &rarr;</a>
     <p class="nota">Te cuento cómo funciona y si encaja con tu negocio.</p>
   </section>
 
